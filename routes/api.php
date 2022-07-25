@@ -25,4 +25,5 @@ Route::get('/profile', [AuthController::class, 'getMyProfile'])->middleware('aut
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth');
 Route::get('login', [AuthController::class, 'unauthorizedRedirect'])->name('login')->middleware('guest');
 Route::post('/refresh-token', [AuthController::class, 'refreshToken']);
+Route::get('/galleries', [GalleriesController::class, 'index'])->name('index');
 

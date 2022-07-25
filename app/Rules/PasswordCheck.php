@@ -28,6 +28,6 @@
       */
      public function message()
      {
-         return 'Password must be at least 8 characters long and contain at least one lowercase character and a number.';
+         return 'Password must be at least 8 characters long and contain at least one number.';
      }
  }
