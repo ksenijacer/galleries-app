@@ -16,17 +16,17 @@ class AuthController extends Controller
 
     public function login(Request $request)
      {
-         $credentials = $request->only(['email', 'password']);
+        $credentials = $request->only(['email', 'password']);
 
-         if (! $token = Auth::attempt($credentials)) {
-             return response()->json(['message' => 'Invalid credentials'
+        if (! $token = Auth::attempt($credentials)) {
+            return response()->json(['message' => 'Invalid credentials'
             ], Response::HTTP_UNAUTHORIZED);
-         }
+        }
 
-         return [
-             'token' => $token,
-             'user' => Auth::user()
-           ];
+        return [
+            'token' => $token,
+            'user' => Auth::user()
+        ];
      }
 
     public function register(RegisterRequest $request)
@@ -63,17 +63,17 @@ class AuthController extends Controller
         ]);
     }
     public function unauthorizedRedirect()
-     {
-         return response()->json(['error' => 'Unauthorized'], 401);
-     }
+    {
+        return response()->json(['error' => 'Unauthorized'], 401);
+    }
 
 
-     protected function respondWithToken($token)
-     {
-         return response()->json([
-             'access_token' => $token,
-             'token_type' => 'bearer',
-             'expires_in' => auth()->factory()->getTTL() * 60
-         ]);
-     }
+    //  protected function respondWithToken($token)
+    //  {
+    //      return response()->json([
+    //          'access_token' => $token,
+    //          'token_type' => 'bearer',
+    //          'expires_in' => auth()->factory()->getTTL() * 60
+    //      ]);
+    //  }
 }
