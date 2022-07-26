@@ -42,7 +42,7 @@ class AuthController extends Controller
         ],200);
      }
 
-    public function getMyProfile()
+    public function getActiveUser()
     {
         $activeUser = Auth::user();
         return response()->json($activeUser);
@@ -62,18 +62,5 @@ class AuthController extends Controller
             'token' => $token
         ]);
     }
-    public function unauthorizedRedirect()
-    {
-        return response()->json(['error' => 'Unauthorized'], 401);
-    }
-
-
-    //  protected function respondWithToken($token)
-    //  {
-    //      return response()->json([
-    //          'access_token' => $token,
-    //          'token_type' => 'bearer',
-    //          'expires_in' => auth()->factory()->getTTL() * 60
-    //      ]);
-    //  }
+   
 }

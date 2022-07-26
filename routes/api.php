@@ -21,9 +21,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/login', [AuthController::class, 'login'])->middleware('guest');
 Route::post('/register', [AuthController::class, 'register'])->middleware('guest');
-Route::get('/profile', [AuthController::class, 'getMyProfile'])->middleware('auth');
+Route::get('/profile', [AuthController::class, 'getActiveUser'])->middleware('auth');
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth');
-Route::get('login', [AuthController::class, 'unauthorizedRedirect'])->name('login')->middleware('guest');
 Route::post('/refresh-token', [AuthController::class, 'refreshToken']);
 Route::get('/galleries', [GalleriesController::class, 'index'])->name('index');
 
