@@ -26,7 +26,7 @@ class GalleryFactory extends Factory
      public function definition()
      {
          return [
-             'name' => $this->faker->word(),
+             'title' => $this->faker->word(),
              'description' => $this->faker->paragraphs(3, true),
              'user_id' => User::all()->random()->id
          ];
