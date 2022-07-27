@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Gallery;
 use App\Models\Image;
+use App\Models\Comment;
 
 class DatabaseSeeder extends Seeder
 {
@@ -20,6 +21,7 @@ class DatabaseSeeder extends Seeder
         User::factory(10)->create();
         Gallery::factory(10)->create();
         Image::factory(10)->create();
+        Comment::factory(30)->create();
 
         // \App\Models\User::factory()->create([
         //     'name' => 'Test User',

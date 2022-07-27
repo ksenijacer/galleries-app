@@ -19,7 +19,12 @@ class Gallery extends Model
         return $this->belongsTo(User::class);
     }
 
-
+    public function scopeSearch($query, $searchTerm)
+    {
+        return $query->whereHas("user", function ($q) use ($searchTerm) {
+            $q->where("firstName", "LIKE", "%$searchTerm%")->orWhere("lastName", "LIKE", "%$searchTerm%");
+        })->orWhere("title", "LIKE", "%$searchTerm%")->orWhere("description", "LIKE", "%$searchTerm%");
+    }
 }
 
 
