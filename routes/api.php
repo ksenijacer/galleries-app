@@ -30,6 +30,7 @@ Route::post('/refresh-token', [AuthController::class, 'refreshToken']);
 
 
 Route::get('/galleries', [GalleriesController::class, 'index'])->name('index');
+Route::post('/galleries', [GalleriesController::class, 'index'])->name('index');
 Route::get('/galleries/{gallery}', [GalleriesController::class, 'show']);
 Route::post('/create', [GalleriesController::class, 'store'])->middleware('auth');;
 Route::put('/edit/{gallery}', [GalleriesController::class, 'update'])->middleware('auth');;

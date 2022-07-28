@@ -1,69 +1,86 @@
 <?php
 
-namespace App\Http\Controllers;
+ namespace App\Http\Controllers;
 
-use App\Models\Gallery;
-use Illuminate\Http\Request;
-use App\Http\Requests\CreateGalleryRequest;
-use App\Http\Requests\UpdateGalleryRequest;
-use App\Models\User;
+ use App\Models\Gallery;
+ use App\Http\Requests\CreateGalleryRequest;
+ use App\Http\Requests\UpdateGalleryRequest;
+ use Illuminate\Http\Request;
+ use Illuminate\Http\Response;
+ use Illuminate\Support\Facades\Auth;
+ use Illuminate\Auth\Access\Gate;
 
-class GalleriesController extends Controller
-{
-    public function index(Request $request)
-    {   
-        $galleries = Gallery::all();
-        return response()->json($galleries);
-    }
+ class GalleryController extends Controller
+ {
+     public function index(Request $request)
+     {
+        $author = $request->input('author');
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(CreateGalleryRequest $request)
-    {
-        $data = $request->validated();
-        $gallery = Gallery::create($data);
-        return response()->json($gallery);
-    }
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Gallery $gallery)
-    {
-        $gallery['images_url'] = unserialize($gallery['images_url']);
-        return response()->json($gallery);
-    }
+        $galleries = Gallery::with(['firstImage', 'user']);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateGalleryRequest $request, Gallery $gallery)
-    {
-        $data = $request->validated();
-        $gallery->update($data);
+        if ($author) {
+            $galleries->whereUserId($author);
+        };
 
-        return response()->json($gallery);
-    }
+        $filter = $request->input('filter');
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Gallery $gallery)
-    {
-        $gallery->delete();
-        return response(null, 204);
-    }
+        $galleries->where(function ($query) use ($filter) {
+            return $query
+                ->orWhereName($filter)
+                ->orWhereDescription($filter)
+                ->orWhereUserName($filter);
+        });
+
+        return response()->json($galleries->latest()->paginate(10));
+     }
+
+     public function store(CreateGalleryRequest $request)
+     {
+
+     $validated = $request->validated();
+
+     $newGallery = new Gallery($validated);
+     $newGallery->user()->associate(Auth::user());
+     $newGallery->save();
+
+     foreach ($validated['url'] as $url) {
+         $newUrlArray[] = ['url' => $url];
+     };
+     $newGallery->images()->createMany($newUrlArray);
+
+     return response()->json($newGallery);
+ }
+
+ public function show(Gallery $gallery)
+ {
+     $gallery->load(['images', 'user', 'comments.user'])->get();
+
+     return response()->json($gallery);
+ }
+
+ public function update(UpdateGalleryRequest $request, Gallery $gallery)
+ {
+     Gate::authorize('update', $gallery);
+
+     $validated = $request->validated();
+
+     $gallery->update($validated);
+
+     $gallery->images()->delete();
+
+     foreach ($validated['url'] as $url) {
+         $newUrlArray[] = ['url' => $url];
+     };
+     $gallery->images()->createMany($newUrlArray);
+
+     return response()->json($gallery);
+ }
+
+ public function destroy(Gallery $gallery)
+ {
+     Gate::authorize('delete', $gallery);
+
+     $gallery->delete();
+     return response($gallery);
+ }
 }
