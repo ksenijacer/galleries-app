@@ -12,11 +12,7 @@ class GalleriesController extends Controller
 {
     public function index(Request $request)
     {   
-        $pageSize = $request->query('PAGE_SIZE', 10);
-        $userId = $request->query('userId', '0');
-        $term = $request->query('term', '');
-        $galleries = Gallery::searchByTerm($term, $userId)->latest()->paginate($pageSize);
-
+        $galleries = Gallery::all();
         return response()->json($galleries);
     }
 
@@ -29,13 +25,8 @@ class GalleriesController extends Controller
     public function store(CreateGalleryRequest $request)
     {
         $data = $request->validated();
-        $user = User::find(auth()->id());
-        $gallery = $user->galleries()->create($data);
-        // $gallery->images()->saveMany($request->input('images'));
-        foreach ($request->input('images') as $key => $data) {
-            $gallery->images()->create($data);
-        }
-        return $gallery;
+        $gallery = Gallery::create($data);
+        return response()->json($gallery);
     }
     /**
      * Display the specified resource.
@@ -59,13 +50,7 @@ class GalleriesController extends Controller
     public function update(UpdateGalleryRequest $request, Gallery $gallery)
     {
         $data = $request->validated();
-        $gallery->update($request->except('images'));
-        $gallery->images()->delete();
-        foreach ($request->input('images') as $value) {
-            unset($value['created_at']);
-            unset($value['updated_at']);
-            $gallery->images()->updateOrCreate($value);
-        }
+        $gallery->update($data);
 
         return response()->json($gallery);
     }
