@@ -24,7 +24,8 @@ class CommentRequest extends FormRequest
     public function rules()
     {
         return [
-            'content' => 'required|string|max:1000'
+            'content' => 'required|string|max:1000',
+            'gallery_id' => 'required|exists:galleries,id',
         ];
     }
 }

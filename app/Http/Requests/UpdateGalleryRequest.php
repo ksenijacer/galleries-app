@@ -24,10 +24,10 @@ class UpdateGalleryRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'sometimes|string|min:2|max:255',
+            'name' => 'sometimes|string|min:2|max:255',
             'description' => 'sometimes|nullable|string|max:1000',
-            'images' => 'array|min:1',
-            'images.*.url' => ['sometimes', 'regex:/^(https?:)?\/\/?[^\'"<>]+?\.(jpg|jpeg|png)(.*)?$/']
+            'url' => 'array|min:1',
+            'url.*' => ['sometimes', 'regex:/^(https?:)?\/\/?[^\'"<>]+?\.(jpg|jpeg|png)(.*)?$/']
         ];
     }
 }

@@ -31,12 +31,11 @@ Route::post('/refresh-token', [AuthController::class, 'refreshToken']);
 
 Route::get('/galleries', [GalleriesController::class, 'index'])->name('index');
 Route::post('/galleries', [GalleriesController::class, 'index'])->name('index');
+Route::post('/galleries', [GalleriesController::class, 'store'])->middleware('auth');
 Route::get('/galleries/{gallery}', [GalleriesController::class, 'show']);
-Route::post('/create', [GalleriesController::class, 'store'])->middleware('auth');;
-Route::put('/edit/{gallery}', [GalleriesController::class, 'update'])->middleware('auth');;
-Route::delete('/delete/{gallery}', [GalleriesController::class, 'destroy'])->middleware('auth');;
+Route::put('/galleries/{gallery}', [GalleriesController::class, 'update'])->middleware('auth');
+Route::delete('/galleries/{gallery}', [GalleriesController::class, 'destroy'])->middleware('auth');
 
-Route::get('/users/{user}', [AuthorController::class, 'show']);
 
 Route::post('/add-comment/{gallery}', [CommentController::class, 'store'])->middleware('auth');
 Route::get('/comments/{gallery}', [CommentController::class, 'show'])->middleware('auth');

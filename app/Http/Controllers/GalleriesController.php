@@ -1,19 +1,19 @@
 <?php
 
- namespace App\Http\Controllers;
+namespace App\Http\Controllers;
 
- use App\Models\Gallery;
- use App\Http\Requests\CreateGalleryRequest;
- use App\Http\Requests\UpdateGalleryRequest;
- use Illuminate\Http\Request;
- use Illuminate\Http\Response;
- use Illuminate\Support\Facades\Auth;
- use Illuminate\Auth\Access\Gate;
+use App\Models\Gallery;
+use App\Http\Requests\CreateGalleryRequest;
+use App\Http\Requests\UpdateGalleryRequest;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
- class GalleryController extends Controller
- {
-     public function index(Request $request)
-     {
+class GalleryController extends Controller
+{
+    public function index(Request $request)
+    {
         $author = $request->input('author');
 
         $galleries = Gallery::with(['firstImage', 'user']);
@@ -32,55 +32,55 @@
         });
 
         return response()->json($galleries->latest()->paginate(10));
-     }
+    }
 
-     public function store(CreateGalleryRequest $request)
-     {
+    public function show(Gallery $gallery)
+    {
+        $gallery->load(['images', 'user', 'comments.user'])->get();
 
-     $validated = $request->validated();
+        return response()->json($gallery);
+    }
 
-     $newGallery = new Gallery($validated);
-     $newGallery->user()->associate(Auth::user());
-     $newGallery->save();
+    public function store(CreateGalleryRequest $request)
+    {
+        $validated = $request->validated();
 
-     foreach ($validated['url'] as $url) {
-         $newUrlArray[] = ['url' => $url];
-     };
-     $newGallery->images()->createMany($newUrlArray);
+        $newGallery = new Gallery($validated);
+        $newGallery->user()->associate(Auth::user());
+        $newGallery->save();
 
-     return response()->json($newGallery);
- }
+        foreach ($validated['url'] as $url) {
+            $newUrlArray[] = ['url' => $url];
+        };
+        $newGallery->images()->createMany($newUrlArray);
 
- public function show(Gallery $gallery)
- {
-     $gallery->load(['images', 'user', 'comments.user'])->get();
+        return response()->json($newGallery);
+    }
 
-     return response()->json($gallery);
- }
 
- public function update(UpdateGalleryRequest $request, Gallery $gallery)
- {
-     Gate::authorize('update', $gallery);
+    public function update(UpdateGalleryRequest $request, Gallery $gallery)
+    {
+        Gate::authorize('update', $gallery);
 
-     $validated = $request->validated();
+        $validated = $request->validated();
 
-     $gallery->update($validated);
+        $gallery->update($validated);
 
-     $gallery->images()->delete();
+        $gallery->images()->delete();
 
-     foreach ($validated['url'] as $url) {
-         $newUrlArray[] = ['url' => $url];
-     };
-     $gallery->images()->createMany($newUrlArray);
+        foreach ($validated['url'] as $url) {
+            $newUrlArray[] = ['url' => $url];
+        };
+        $gallery->images()->createMany($newUrlArray);
 
-     return response()->json($gallery);
- }
+        return response()->json($gallery);
+    }
 
- public function destroy(Gallery $gallery)
- {
-     Gate::authorize('delete', $gallery);
+    public function destroy(Gallery $gallery)
+    {
+        Gate::authorize('delete', $gallery);
 
-     $gallery->delete();
-     return response($gallery);
- }
+        $gallery->delete();
+        return response($gallery);
+    }
 }

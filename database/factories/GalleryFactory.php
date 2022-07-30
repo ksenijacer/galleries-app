@@ -28,7 +28,8 @@ class GalleryFactory extends Factory
          return [
              'name' => $this->faker->word(),
              'description' => $this->faker->paragraphs(3, true),
-             'user_id' => User::all()->random()->id
+             'user_id' => User::all()->random()->id,
+             'created_at' => $this->faker->dateTimeThisDecade('now', 'Europe/Belgrade'),
          ];
      }
  }

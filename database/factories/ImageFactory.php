@@ -15,7 +15,7 @@ class ImageFactory extends Factory
      public function definition()
      {
          return [
-             'url' => $this->faker->imageUrl(640, 480, 'gallery'),
+             'url' => $this->faker->imageUrl(360, 360, 'gallery'),
              'gallery_id' => Gallery::all()->random()->id
          ];
      }

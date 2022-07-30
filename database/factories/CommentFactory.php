@@ -21,6 +21,7 @@ class CommentFactory extends Factory
             'content' => $this->faker->sentence(),
             'user_id' => User::all()->random()->id,
             'gallery_id' => Gallery::all()->random()->id,
+            'created_at' => $this->faker->dateTimeThisDecade('now', 'Europe/Belgrade'),
         ];
     }
 }

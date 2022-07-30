@@ -9,22 +9,54 @@ class Gallery extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'description', 'user_id'];
+    protected $fillable = [
+        'name',
+        'description',
+    ];
 
-    public function images() {
+    public function images()
+    {
         return $this->hasMany(Image::class);
     }
 
-    public function user(){
+    public function firstImage()
+    {
+        return $this->hasOne(Image::class)->ofMany('id', 'min');
+    }
+
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function scopeSearch($query, $searchTerm)
+    public function comments()
     {
-        return $query->whereHas("user", function ($q) use ($searchTerm) {
-            $q->where("firstName", "LIKE", "%$searchTerm%")->orWhere("lastName", "LIKE", "%$searchTerm%");
-        })->orWhere("title", "LIKE", "%$searchTerm%")->orWhere("description", "LIKE", "%$searchTerm%");
+        return $this->hasMany(Comment::class);
     }
+
+
+    // public function scopeOrWhereName($query, $search = '')
+    // {
+    //     if ($search) {
+    //         return $query->orWhere('name', 'like', "%{$search}%");
+    //     }
+    // }
+
+    // public function scopeOrWhereDescription($query, $search = '')
+    // {
+    //     if ($search) {
+    //         return $query->orWhere('description', 'like', "%{$search}%");
+    //     }
+    // }
+
+    // public function scopeOrWhereUserName($query, $search = '')
+    // {
+
+    //     if ($search) {
+    //         return $query->orWhereRelation('user', 'first_name', 'like', "%{$search}%")
+    //             ->orWhereRelation('user', 'last_name', 'like', "%{$search}%");
+    //     }
+    // }
 }
 
 
