@@ -10,7 +10,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
-class GalleryController extends Controller
+class GalleriesController extends Controller
 {
     public function index(Request $request)
     {
@@ -22,23 +22,7 @@ class GalleryController extends Controller
             $galleries->whereUserId($author);
         };
 
-        $filter = $request->input('filter');
-
-        $galleries->where(function ($query) use ($filter) {
-            return $query
-                ->orWhereName($filter)
-                ->orWhereDescription($filter)
-                ->orWhereUserName($filter);
-        });
-
-        return response()->json($galleries->latest()->paginate(10));
-    }
-
-    public function show(Gallery $gallery)
-    {
-        $gallery->load(['images', 'user', 'comments.user'])->get();
-
-        return response()->json($gallery);
+        return response()->json($galleries->paginate(10));
     }
 
     public function store(CreateGalleryRequest $request)
@@ -57,6 +41,12 @@ class GalleryController extends Controller
         return response()->json($newGallery);
     }
 
+    public function show(Gallery $gallery)
+    {
+        $gallery->load(['images', 'user'])->get();
+
+        return response()->json($gallery);
+    }
 
     public function update(UpdateGalleryRequest $request, Gallery $gallery)
     {
