@@ -35,28 +35,28 @@ class Gallery extends Model
     }
 
 
-    // public function scopeOrWhereName($query, $search = '')
-    // {
-    //     if ($search) {
-    //         return $query->orWhere('name', 'like', "%{$search}%");
-    //     }
-    // }
+    public function scopeName($query, $search = '')
+    {
+        if ($search) {
+            return $query->orWhere('name', 'like', "%{$search}%");
+        }
+    }
 
-    // public function scopeOrWhereDescription($query, $search = '')
-    // {
-    //     if ($search) {
-    //         return $query->orWhere('description', 'like', "%{$search}%");
-    //     }
-    // }
+    public function scopeDescription($query, $search = '')
+    {
+        if ($search) {
+            return $query->orWhere('description', 'like', "%{$search}%");
+        }
+    }
 
-    // public function scopeOrWhereUserName($query, $search = '')
-    // {
+    public function scopeUserName($query, $search = '')
+    {
 
-    //     if ($search) {
-    //         return $query->orWhereRelation('user', 'first_name', 'like', "%{$search}%")
-    //             ->orWhereRelation('user', 'last_name', 'like', "%{$search}%");
-    //     }
-    // }
+        if ($search) {
+            return $query->orWhereRelation('user', 'first_name', 'like', "%{$search}%")
+                ->orWhereRelation('user', 'last_name', 'like', "%{$search}%");
+        }
+    }
 }
 
 

@@ -19,8 +19,8 @@ class CommentFactory extends Factory
     {
         return [
             'content' => $this->faker->sentence(),
-            'user_id' => User::all()->random()->id,
-            'gallery_id' => Gallery::all()->random()->id,
+            'user_id' => User::inRandomOrder()->first(),
+            'gallery_id' => Gallery::inRandomOrder()->first(),
             'created_at' => $this->faker->dateTimeThisDecade('now', 'Europe/Belgrade'),
         ];
     }

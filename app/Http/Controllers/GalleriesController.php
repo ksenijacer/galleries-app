@@ -22,6 +22,15 @@ class GalleriesController extends Controller
             $galleries->whereUserId($author);
         };
 
+        // $filter = $request->input('filter');
+
+        // $galleries->where(function ($query) use ($filter) {
+        //     return $query
+        //         ->orName($filter)
+        //         ->orDescription($filter)
+        //         ->orUserName($filter);
+        // });
+
         return response()->json($galleries->paginate(10));
     }
 
@@ -43,7 +52,7 @@ class GalleriesController extends Controller
 
     public function show(Gallery $gallery)
     {
-        $gallery->load(['images', 'user'])->get();
+        $gallery->load(['images', 'user', 'comments.user'])->get();
 
         return response()->json($gallery);
     }

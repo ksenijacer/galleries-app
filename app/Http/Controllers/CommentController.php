@@ -1,9 +1,13 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Http\Requests\CommentRequest;
 use App\Models\Gallery;
 use App\Models\Comment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class CommentController extends Controller
 {
@@ -12,16 +16,21 @@ class CommentController extends Controller
         return response(['comments' => $comments]);
     }
 
-    public function store(Gallery $gallery, Request $request) {
-        $request->validate([
-            'content' => 'required|string|max:1000'
-        ]);
-        $comment = $gallery->comments()->create($request->all());
-        $comment->user;
-        return $comment;
+    public function store(CommentRequest $request) {
+        $validated = $request->validated();
+
+        $newComment = new Comment($validated);
+        $newComment->user()->associate(Auth::user());
+        $newComment->save();
+
+        $newComment = $newComment->load('user');
+
+        return response()->json($newComment);
     }
 
     public function destroy(Comment $comment) {
-        return $comment->delete();
+
+        $comment->delete();
+        return response($comment);
     }
 }

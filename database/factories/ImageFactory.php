@@ -16,7 +16,7 @@ class ImageFactory extends Factory
      {
          return [
              'url' => $this->faker->imageUrl(360, 360, 'gallery'),
-             'gallery_id' => Gallery::all()->random()->id
+             'gallery_id' => Gallery::inRandomOrder()->first(),
          ];
      }
  }
